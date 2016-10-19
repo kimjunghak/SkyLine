@@ -1,9 +1,11 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
  * Created by kjh on 16. 10. 18.
  */
 public class SkyLineTest {
+
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         SkyLine skyline = new SkyLine();
@@ -21,13 +23,18 @@ public class SkyLineTest {
             System.out.println("왼쪽 x 좌표, 높이, 오른쪽 x 좌표를 입력하세요 : (ex 1,11,5)");
             String xh = scan.nextLine();
             xhArray = xh.split(",");
-            buildings[loop] = new Building(xhArray[0], xhArray[1], xhArray[2]);
+            buildings[loop] = new Building(convertToInt(xhArray[0]), convertToInt(xhArray[1]), convertToInt(xhArray[2]));
             loop++;
         }
-        if(x == 1)
-            skyline.findSkyLine(buildings, 0, 0);
 
+        skyline.print(buildings, x-1);
 
 
     }
+
+    private static int convertToInt(String s) {
+        return Integer.parseInt(s);
+    }
+
+
 }

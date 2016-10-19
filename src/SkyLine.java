@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -5,54 +6,56 @@ import java.util.ArrayList;
  */
 public class SkyLine {
 
-    ArrayList<Node> sky = new ArrayList<>();
 
-    public ArrayList<Node> findSkyLine(Building[] buildings, int start, int end) {
+    public ArrayList<int[]> findSkyLine(Building[] buildings, int start, int end) {
         if (start == end) {
-            sky.add(new Node(buildings[start].leftx, buildings[start].height));
-            sky.add(new Node(buildings[end].rightx, 0));
-            return sky;
+            ArrayList<int[]> skyline = new ArrayList<>();
+            skyline.add(new int[]{buildings[start].leftx, buildings[start].height});
+            skyline.add(new int[]{buildings[end].rightx, 0});
+            return skyline;
         }
         int middle = (start + end) / 2;
-        return mergeSkyLine(findSkyLine(buildings, start, middle), findSkyLine(buildings, middle + 1, end));
+        ArrayList<int[]> sky1 = findSkyLine(buildings, start, middle);
+        ArrayList<int[]> sky2 = findSkyLine(buildings, middle+1, end);
+        return mergeSkyLine(sky1, sky2);
     }
 
-    private ArrayList<Node> mergeSkyLine(ArrayList<Node> sky1, ArrayList<Node> sky2) {
-        int currentHeight1 = 0, currentHeight2 = 0;
-        int currentX, maxHeight;
-        ArrayList<Node> skyline = new ArrayList();
-        while (sky1.size() > 0 && sky2.size() > 0) {
-            if (sky1.get(0).x < sky2.get(0).x) {
-                currentX = sky1.get(0).x;
-                maxHeight = currentHeight1;
-                if (currentHeight2 > maxHeight) {
-                    maxHeight = currentHeight2;
-                    skyline.add(new Node(currentX, maxHeight));
-                    skyline.remove(sky1.get(0));
-                }
-            } else {
-                currentX = sky2.get(0).x;
-                currentHeight2 = skyline.get(0).y;
-                maxHeight = currentHeight1;
-                if (currentHeight2 > maxHeight) {
-                    maxHeight = currentHeight2;
-                    skyline.add(new Node(currentX, maxHeight));
-                    skyline.remove(sky2.get(0));
-                }
+    private ArrayList<int[]> mergeSkyLine(ArrayList<int[]> sky1, ArrayList<int[]> sky2) {
+        ArrayList<int[]> result = new ArrayList<>();
+
+        while(sky1.size() > 0 && sky2.size() > 0){
+            if(sky1.get(0)[0] < sky2.get(0)[0]){
+                result.add(sky1.get(0));
+                sky1.remove(0);
+            }
+            else{
+                result.add(sky2.get(0));
+                sky2.remove(0);
             }
         }
-        if (sky1.isEmpty())
-            skyline.addAll(sky1);
-        else if (sky2.isEmpty())
-            skyline.addAll(sky2);
 
-        return skyline;
+        while(sky1.size() > 0){
+
+            sky1.remove(0);
+        }
+
+        while(sky2.size() > 0){
+
+            sky2.remove(0);
+        }
+
+        return result;
     }
 
-    public void print(){
-        for(int i=0 ; i<sky.size() ; i++) {
-            System.out.print(sky.get(i).x + ", " + sky.get(i).y);
-            System.out.print(",");
+    private int getFirstIndex(ArrayList<int[]> sky1) {
+        return sky1.indexOf(sky1.get(0));
+    }
+
+    public void print(Building[] buildings, int num){
+        ArrayList<int[]> print = findSkyLine(buildings, 0, num);
+        for(int i=0 ; i<print.size() ; i++){
+            System.out.print(print.get(i)[0] + ", " + print.get(i)[1]);
+            System.out.print(", ");
         }
     }
 
@@ -61,18 +64,9 @@ public class SkyLine {
 class Building {
     int leftx, height, rightx;
 
-    public Building(String leftx, String height, String rightx){
-        this.leftx = Integer.parseInt(leftx);
-        this.height = Integer.parseInt(height);
-        this.rightx = Integer.parseInt(rightx);
-    }
-}
-
-class Node {
-    int x, y;
-
-    public Node(int x, int y){
-        this.x = x;
-        this.y = y;
+    public Building(int leftx, int height, int rightx){
+        this.leftx = leftx;
+        this.height = height;
+        this.rightx = rightx;
     }
 }
