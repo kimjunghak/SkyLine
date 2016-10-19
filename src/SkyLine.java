@@ -22,40 +22,46 @@ public class SkyLine {
 
     private ArrayList<int[]> mergeSkyLine(ArrayList<int[]> sky1, ArrayList<int[]> sky2) {
         ArrayList<int[]> result = new ArrayList<>();
-
+        int currentH1 = 0, currentH2 = 0;
         while(sky1.size() > 0 && sky2.size() > 0){
+
             if(sky1.get(0)[0] < sky2.get(0)[0]){
-                result.add(sky1.get(0));
+                int currentX = sky1.get(0)[0];
+                currentH1 = sky1.get(0)[1];
+                result.add(new int[]{currentX, Math.max(currentH1, currentH2)});
                 sky1.remove(0);
             }
             else{
-                result.add(sky2.get(0));
+                int currentX = sky2.get(0)[0];
+                currentH2 = sky2.get(0)[1];
+                result.add(new int[]{currentX, Math.max(currentH1, currentH2)});
                 sky2.remove(0);
             }
         }
 
-        while(sky1.size() > 0){
+        if(sky1.size() > 0)
+            result.addAll(sky1);
 
-            sky1.remove(0);
-        }
-
-        while(sky2.size() > 0){
-
-            sky2.remove(0);
-        }
+        if(sky2.size() > 0)
+            result.addAll(sky2);
 
         return result;
-    }
-
-    private int getFirstIndex(ArrayList<int[]> sky1) {
-        return sky1.indexOf(sky1.get(0));
     }
 
     public void print(Building[] buildings, int num){
         ArrayList<int[]> print = findSkyLine(buildings, 0, num);
         for(int i=0 ; i<print.size() ; i++){
-            System.out.print(print.get(i)[0] + ", " + print.get(i)[1]);
-            System.out.print(", ");
+            if(i==0){
+                System.out.print(print.get(i)[0] + ", " + print.get(i)[1]);
+                System.out.print(", ");
+            }
+            else{
+                if(print.get(i-1)[1] != print.get(i)[1]) {
+                    System.out.print(print.get(i)[0] + ", " + print.get(i)[1]);
+                    if(i != print.size()-1)
+                        System.out.print(", ");
+                }
+            }
         }
     }
 
