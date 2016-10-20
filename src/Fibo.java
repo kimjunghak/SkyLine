@@ -6,28 +6,33 @@ import java.math.BigInteger;
  */
 public class Fibo {
 
+    double[] time;
+
     public BigInteger fibo_recursion(int number){
         if(number < 2) return new BigInteger(String.valueOf(number));
         return fibo_recursion(number - 1).add(fibo_recursion(number - 2));
     }
 
     public void fibo_Array(int number){
-        long start = System.nanoTime();
         BigInteger[] big_array = new BigInteger[number + 1];
+        time = new double[number+1];
 
         big_array[0] = new BigInteger("0");
         big_array[1] = new BigInteger("1");
 
         for(int i=0 ; i <= number ; i++) {
+            long start = System.nanoTime();
             if(i == 0 | i == 1)
                 input_array(big_array, i);
             else{
                 big_array[i] = big_array[i-1].add(big_array[i-2]);
                 System.out.println("fibo("+i+") = "+big_array[i]);
             }
+            long end = System.nanoTime();
+            time[i] = (end - start) / Math.pow(10,9);
+            System.out.printf("%.10f s\n", time[i]);
         }
-        long end = System.nanoTime();
-        System.out.printf("%.10f s\n", (end - start) / Math.pow(10, 9));
+        timePrint();
     }
 
     public BigInteger fibo_squaring(int number){
@@ -60,5 +65,10 @@ public class Fibo {
     private void input_array(BigInteger[] big_array, int i) {
         big_array[i] = new BigInteger(String.valueOf(i));
         System.out.println("fibo("+i+") = "+big_array[i]);
+    }
+
+    public void timePrint(){
+        for(int i=0 ; i<time.length ; i++)
+            System.out.printf("%.10f\n", time[i]);
     }
 }
